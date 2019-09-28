@@ -135,6 +135,29 @@ class Action {
 
 		fs.rmdirSync(dirPath);
 	}
+
+	/**
+	 * readableHumanSize
+	 *
+	 * Convert bytes number to a value readable by a human
+	 *
+	 * @param {number} bytes Number to convert
+	 * @param {number} decimalPoint Decimal point
+	 *
+	 * @return string
+	 */
+	private static readableHumanSize(bytes: number, decimalPoint: number = 2): string {
+		if (bytes === 0) {
+			return '0 Byte';
+		}
+
+		const k: number = 1024;
+		const	sizes: string[] = ['Bytes', 'Kb', 'Mb', 'Gb', 'Tb', 'Pb', 'Eb', 'Zb', 'Yb'];
+		const i: number = Math.floor(Math.log(bytes) / Math.log(k));
+		const value: number = parseFloat((bytes / Math.pow(k, i)).toFixed(decimalPoint));
+
+		return `${value} ${sizes[i]}`;
+	}
 }
 
 export { Action };
