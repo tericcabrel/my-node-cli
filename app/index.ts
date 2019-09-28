@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { RenameOption } from './types';
+import {DeleteOption, RenameOption} from './types';
 import { Action } from './action';
 
 const program: Command = require('commander');
@@ -11,7 +11,6 @@ program.version('1.0.0', '-v, --version', 'Output the current version');
 
 program
 	.command('size <path> [unit]')
-	.option('-c, --case', 'Sensitive case')
 	.option('-m, --match <type>',  'Specify some extensions to look')
 	.option('-e, --exclude <type>',  'Exclude folders')
 	.option('-r, --recursive',  'Recursive')
@@ -25,8 +24,9 @@ program
 	.command('delete <path>')
 	.description('Delete a folder')
 	.option('-r, --recursive',  'Delete recursively')
-	.action((path: string) => {
-		console.log(`delete command called with path: ${path}`);
+	.action((path: string, options: DeleteOption) => {
+		Action.removeDirectory(path, options.recursive);
+		console.info('Done: Directory deleted successfully!');
 	});
 
 program

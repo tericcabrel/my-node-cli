@@ -103,6 +103,38 @@ class Action {
 			fs.renameSync(`${dirPath}/${f}`, `${dirPath}/${fileName}`);
 		});
 	}
+
+	/**
+	 * removeDirectory
+	 *
+	 * Delete a directory
+	 *
+	 * @param {string} dirPath Directory containing the files to rename
+	 * @param {boolean} recursive Indicates if we want to rename sub directory
+	 *
+	 * @return void
+	 */
+	public static removeDirectory(dirPath: string, recursive: boolean): void {
+		const pathExist: boolean = fs.existsSync(dirPath);
+
+		if (!pathExist) {
+			throw new Error('The path doesn\'t exists!');
+		}
+
+		const files: string[] = fs.readdirSync(dirPath, { encoding: 'utf-8' });
+
+		for (const file of files) {
+			const filePath: string = `${dirPath}/${file}`;
+
+			if (fs.statSync(filePath).isDirectory() && recursive) {
+					Action.removeDirectory(filePath, recursive);
+			} else {
+				fs.unlinkSync(filePath);
+			}
+		}
+
+		fs.rmdirSync(dirPath);
+	}
 }
 
 export { Action };

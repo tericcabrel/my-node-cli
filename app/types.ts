@@ -9,3 +9,7 @@ export type RenameOption = {
 	replace: string;
 	strategy: string;
 } & Option;
+
+export type DeleteOption = {
+	recursive: boolean;
+} & Option;
