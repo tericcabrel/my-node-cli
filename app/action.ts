@@ -1,13 +1,42 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+/**
+ * Contains the definition of function to executed when
+ * we run a command
+ *
+ * @class
+ */
 class Action {
 	private static counter: number = 0;
 
+	/**
+	 * getCounter
+	 *
+	 * Returns the number of files renamed
+	 *
+	 * @return number
+	 */
 	public static getCounter(): number {
 		return Action.counter;
 	}
 
+	/**
+	 * rename
+	 *
+	 * Find the file's name in a directory that match the keyword and
+	 * replace with a string the rename the file to the new one
+	 *
+	 * @param {string} dirPath Directory containing the files to rename
+	 * @param {boolean} recursive Indicates if we want to rename sub directory
+	 * @param {boolean} isCaseSensitive If case sensitivity matter on file's name
+	 * @param {string} match Extensions to search for
+	 * @param {string} exclude Extensions to ignore
+	 * @param { string} find keyword to find
+	 * @param { string} replace string to replace the keyword found
+	 *
+	 * @return void
+	 */
 	public static rename(
 		dirPath: string,
 		recursive: boolean,
@@ -17,14 +46,6 @@ class Action {
 		find: string,
 		replace: string,
 	): void {
-		// console.log(`rename command called with path: ${path}`);
-		// console.log('Match => ', match);
-		// console.log('Exclude => ', exclude);
-		// console.log('Recursive => ', recursive);
-		// console.log('Case => ', isCaseSensitive);
-		// console.log('Find => ', find);
-		// console.log('Replace => ', replace);
-		// console.log('Strategy => ', strategy);
 		const excludeArray: string[] = exclude ? exclude.split(',') : [];
 		const matchArray: string[] = match ? match.split(',') : [];
 
