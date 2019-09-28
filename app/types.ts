@@ -13,3 +13,9 @@ export type RenameOption = {
 export type DeleteOption = {
 	recursive: boolean;
 } & Option;
+
+export type SizeOption = {
+	recursive: boolean;
+	match: string|undefined;
+	exclude: string|undefined;
+} & Option;

@@ -8,3 +8,10 @@ cd build
 
 
 ./index.js delete '/Users/john/Desktop/node-project' -r
+
+
+ ./index.js size '/Users/john/Desktop/node-project' standard -r -m zip
+
+ ./index.js size '/Users/john/Desktop/node-project' -r -e zip,mp4
+
+ ./index.js size '/Users/john/Desktop/node-project' commercial -r

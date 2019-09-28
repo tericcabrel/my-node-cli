@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import {DeleteOption, RenameOption} from './types';
+import { DeleteOption, RenameOption, SizeOption } from './types';
 import { Action } from './action';
 
 const program: Command = require('commander');
@@ -15,9 +15,13 @@ program
 	.option('-e, --exclude <type>',  'Exclude folders')
 	.option('-r, --recursive',  'Recursive')
 	.description('Get the size of a folder')
-	.action((path: string, unit: string, options: any) => {
-		console.log(`size command called with path ${path}; unit ${unit}`);
-		console.log(`size options ${JSON.stringify(options)}`);
+	.action((path: string, unit: string, options: SizeOption) => {
+		const { match, exclude, recursive }: any = options;
+		const size: number = Action.getSize(path, recursive, match, exclude);
+
+		const u: string = !unit ? 'commercial' : unit;
+
+		console.info(`The size is: ${Action.readableHumanSize(size, u)}`);
 	});
 
 program

@@ -142,21 +142,81 @@ class Action {
 	 * Convert bytes number to a value readable by a human
 	 *
 	 * @param {number} bytes Number to convert
+	 * @param {string} unit Number to divide the size (1000 for commercial and 1024 for standard)
 	 * @param {number} decimalPoint Decimal point
 	 *
 	 * @return string
 	 */
-	private static readableHumanSize(bytes: number, decimalPoint: number = 2): string {
+	public static readableHumanSize(bytes: number, unit: string, decimalPoint: number = 2): string {
 		if (bytes === 0) {
 			return '0 Byte';
 		}
 
-		const k: number = 1024;
+		const k: number = unit === 'standard' ? 1024 : 1000;
 		const	sizes: string[] = ['Bytes', 'Kb', 'Mb', 'Gb', 'Tb', 'Pb', 'Eb', 'Zb', 'Yb'];
 		const i: number = Math.floor(Math.log(bytes) / Math.log(k));
 		const value: number = parseFloat((bytes / Math.pow(k, i)).toFixed(decimalPoint));
 
 		return `${value} ${sizes[i]}`;
+	}
+
+	/**
+	 * getSize
+	 *
+	 * Get the size of a folder
+	 *
+	 * @param {string} dirPath Directory containing the files
+	 * @param {boolean} recursive Indicates if we want to rename sub directory
+	 * @param {string} match Extensions to search for
+	 * @param {string} exclude Extensions to ignore
+	 *
+	 * @return number
+	 */
+	public static getSize(
+		dirPath: string,
+		recursive: boolean,
+		match: string|undefined,
+		exclude: string|undefined,
+	): number {
+		const excludeArray: string[] = exclude ? exclude.split(',') : [];
+		const matchArray: string[] = match ? match.split(',') : [];
+
+		const pathExist: boolean = fs.existsSync(dirPath);
+
+		if (!pathExist) {
+			throw new Error('The path doesn\'t exists!');
+		}
+
+		const stat: fs.Stats = fs.statSync(dirPath);
+
+		if (!stat.isDirectory()) {
+			throw new Error('The path must be a directory!');
+		}
+
+		const dirs: string[] = fs.readdirSync(dirPath, { encoding: 'utf-8' });
+		let size: number = 0;
+
+		for (const file of dirs) {
+			const filePath: string = `${dirPath}/${file}`;
+			const statFile: fs.Stats = fs.statSync(filePath);
+
+			if (statFile.isDirectory()) {
+				if (recursive) {
+					size += Action.getSize(filePath, recursive, match, exclude);
+				}
+			} else {
+				const ext: string = path.extname(filePath).toLowerCase().substring(1);
+
+				if ((excludeArray.length > 0 && !excludeArray.includes(ext)) ||
+					(matchArray.length > 0 && matchArray.includes(ext)) ||
+					(excludeArray.length === 0 && matchArray.length === 0)
+				) {
+						size += statFile.size;
+					}
+			}
+		}
+
+		return size;
 	}
 }
 
